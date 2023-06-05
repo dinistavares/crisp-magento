@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="script-src">
+            <values>
+                <value id="crisp_client" type="host">https://client.crisp.chat</value>
+            </values>
+        </policy>
+        <policy id="style-src">
+            <values>
+                <value id="crisp_client" type="host">https://client.crisp.chat</value>
+            </values>
+        </policy>
+        <policy id="font-src">
+            <values>
+                <value id="crisp_client" type="host">https://client.crisp.chat</value>
+            </values>
+        </policy>
+        <policy id="img-src">
+            <values>
+                <value id="crisp_client_images" type="host">https://image.crisp.chat</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="crisp_client" type="host">https://client.crisp.chat</value>
+                <value id="wss_crisp_client" type="host">wss://client.relay.crisp.chat</value>
+                <value id="crisp_plugin" type="host">https://plugins.crisp.chat</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

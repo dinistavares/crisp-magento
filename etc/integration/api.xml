@@ -1,0 +1,14 @@
+<integrations>
+    <integration name="Crisp">
+        <resources>
+            <resource name="Magento_Customer::customer" />
+            <resource name="Magento_Customer::manage" />
+
+            <resource name="Magento_Sales::sales" />
+            <resource name="Magento_Sales::sales_operation" />
+            <resource name="Magento_Sales::sales_order" />
+            <resource name="Magento_Sales::actions" />
+            <resource name="Magento_Sales::actions_view" />
+        </resources>
+    </integration>
+</integrations>

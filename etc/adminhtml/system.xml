@@ -1,0 +1,21 @@
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="crisp" translate="label" sortOrder="400">
+            <label>Crisp</label>
+        </tab>
+        <section id="crisp_settings" translate="label" type="text" sortOrder="300" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Settings</label>
+            <tab>crisp</tab>
+            <resource>Crisp_Crisp::config_chatbox</resource>
+            
+            <group id="chatbox" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1">
+                <label> Configure Your Chatbox </label>
+                <field id="crisp_website_id" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Website ID</label>
+                    <comment>Enter you Crisp website ID found in app.crisp.chat > Settings > Website settings > (select webite) > Setup Instructions</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
