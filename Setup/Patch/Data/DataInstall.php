@@ -43,16 +43,6 @@ class DataInstall implements DataPatchInterface, PatchRevertableInterface
     /**
      * @inheritDoc
      */
-    public function revert()
-    {
-        $this->moduleDataSetup->startSetup();
-        // Revert code if necessary
-        $this->moduleDataSetup->endSetup();
-    }
-
-    /**
-     * @inheritDoc
-     */
     public static function getDependencies()
     {
         return [];
