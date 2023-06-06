@@ -3,10 +3,9 @@ namespace Crisp\Crisp\Setup\Patch\Data;
 
 use Magento\Framework\Setup\Patch\DataPatchInterface;
 use Magento\Framework\Setup\ModuleDataSetupInterface;
-use Magento\Framework\Setup\Patch\PatchRevertableInterface;
 use Magento\Integration\Model\ConfigBasedIntegrationManager;
 
-class DataInstall implements DataPatchInterface, PatchRevertableInterface
+class DataInstall implements DataPatchInterface
 {
     /**
      * @var ConfigBasedIntegrationManager
@@ -35,9 +34,9 @@ class DataInstall implements DataPatchInterface, PatchRevertableInterface
      */
     public function apply()
     {
-        $this->moduleDataSetup->startSetup();
+        $this->moduleDataSetup->getConnection()->startSetup();
         $this->integrationManager->processIntegrationConfig(['Crisp']);
-        $this->moduleDataSetup->endSetup();
+        $this->moduleDataSetup->getConnection()->endSetup();
     }
 
     /**
