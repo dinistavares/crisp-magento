@@ -2,8 +2,9 @@
 
 A module to add [Crisp](https://crisp.chat) to your store.
 
-### Installation
-```
+### Installation
+
+```bash
 # Update your compose.json file
 composer require crisp/chatbox-and-helpdesk:1.0.0
 
