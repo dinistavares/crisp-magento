@@ -1,6 +1,6 @@
  <integrations>
     <integration name="Crisp">
-       <email></email>
+       <email>support@crisp.chat</email>
        <endpoint_url>https://plugins.crisp.chat/urn:crisp.im:magento:0/config/oauth</endpoint_url>
        <identity_link_url>https://plugins.crisp.chat/urn:crisp.im:magento:0/config/identify</identity_link_url>
     </integration>
