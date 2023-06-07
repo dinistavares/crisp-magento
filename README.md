@@ -6,7 +6,7 @@ A module to add [Crisp](https://crisp.chat) to your store.
 
 ```bash
 # Update your compose.json file
-composer require crisp/chatbox-and-helpdesk:1.0.0
+composer require crisp-chat/chatbox-and-helpdesk:1.0.0
 
 # Enable the Crisp module:
 bin/magento module:enable Crisp_Crisp
@@ -23,3 +23,10 @@ bin/magento setup:static-content:deploy
 # Clean the cache
 bin/magento cache:clean
 ```
+
+
+### Troubleshooting
+
+#### After installing the module, the integration is not being added to the database? 
+* Uninstall the plugin, then in your database delete `Crisp\Crisp\Setup\Patch\Data\DataInstall` from the `patch_list` integration.
+* Reinstall the integration.
