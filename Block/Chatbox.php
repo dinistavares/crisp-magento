@@ -10,6 +10,7 @@ use \Magento\Framework\App\Config\ScopeConfigInterface;
 use \Magento\Customer\Model\SessionFactory;
 use \Magento\Customer\Model\CustomerFactory;
 use \Magento\Store\Model\StoreManagerInterface;
+use \Hyva\Theme\Service\CurrentTheme;
 
 class Chatbox extends Template
 {
@@ -19,6 +20,7 @@ class Chatbox extends Template
      * @param SessionFactory        $session
      * @param CustomerFactory       $customer
      * @param StoreManagerInterface $storeManager
+     * @param CurrentTheme          $currentTheme
      * @param array                 $data
      */
 
@@ -28,6 +30,7 @@ class Chatbox extends Template
         SessionFactory $session,
         CustomerFactory $customer,
         StoreManagerInterface $storeManager,
+        CurrentTheme $currentTheme,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -35,6 +38,7 @@ class Chatbox extends Template
         $this->_session      = $session;
         $this->_customer     = $customer;
         $this->_storeManager = $storeManager;
+        $this->currentTheme  = $currentTheme;
     }
 
     /**
@@ -83,5 +87,19 @@ class Chatbox extends Template
     public function getCurrentCurrency()
     {
         return $this->_storeManager->getStore()->getCurrentCurrencyCode();
+    }
+
+    /**
+     * Check if theme is Hyva
+     *
+     * @return boolean
+     */
+    public function isHyva()
+    {
+        if ($this->currentTheme === null) {
+            return false;
+        }
+
+        return $this->currentTheme->isHyva();
     }
 }
