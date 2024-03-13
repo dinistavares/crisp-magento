@@ -13,8 +13,7 @@
     "magento/module-customer": "103.*",
     "magento/module-config": "101.*",
     "magento/module-csp": "100.*",
-    "magento/module-integration": "100.*",
-    "hyva-themes/magento2-theme-module": "*"
+    "magento/module-integration": "100.*"
   },
   "autoload": {
     "files": [ "registration.php" ],
