@@ -1,11 +1,6 @@
 <?php if (null !== $block->getWebsiteId()): ?>
 <script>
     const crispPluginURL = "https://plugins.crisp.chat/urn:crisp.im:magento:0"
-    let isHyva = false;
-    
-    if (<?= $escaper->escapeHtml($block->isHyva()); ?> == 1) {
-        isHyva = true;
-    }
 
     window.$crisp = [];
     window.CRISP_WEBSITE_ID = "<?= $escaper->escapeHtml($block->getWebsiteId()); ?>";
@@ -32,9 +27,7 @@
             postData("customer", {id: parseInt(_customerId)})
         }
 
-        if (!isHyva) {
-            postCartLuma();
-        }
+        postCartLuma();
     }
 
     function postCartLuma() {
@@ -71,28 +64,6 @@
         })
     }
 
-    function postCartHyva(data) {
-        let _cartType = "cart"
-        let _customer = data?.detail?.data.customer || null;
-        let _cart = data?.detail?.data.cart || null;
-        let _currency = "<?= $escaper->escapeHtml($block->getCurrentCurrency()); ?>"
-
-        if (_customer?.fullname) {
-            $crisp.push(['set', 'user:nickname', _customer.fullname]);
-        }
-
-        if (_cart?.items) {
-            if (_currency !== null) {
-                _cart.currency = _currency
-            }
-
-            // Only post cart session ID exists
-            if (window.CRISP_SESSION_ID) {
-                postData(_cartType, _cart);
-            }
-        }
-    }
-
     function postData(type, body) {
         fetch(
                 crispPluginURL +
@@ -110,10 +81,6 @@
                 body: JSON.stringify(body),
             }
         );
-    }
-
-    if (isHyva) {
-        window.addEventListener("private-content-loaded", postCartHyva);
     }
 </script>
 <?php else: ?>

@@ -2,7 +2,7 @@
   "name": "crisp-chat/chatbox-and-helpdesk",
   "description": "A module to add a chat widget on your website and show your customers carts and orders in your Crisp inbox.",
   "type": "magento2-module",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "license": [
     "MIT"
   ],
@@ -13,7 +13,8 @@
     "magento/module-customer": "103.*",
     "magento/module-config": "101.*",
     "magento/module-csp": "100.*",
-    "magento/module-integration": "100.*"
+    "magento/module-integration": "100.*",
+    "hyva-themes/magento2-theme-module": "*"
   },
   "autoload": {
     "files": [ "registration.php" ],
