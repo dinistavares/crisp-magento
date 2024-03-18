@@ -17,7 +17,11 @@
         let _customerEmail = "<?= $escaper->escapeHtml($block->getCustomerEmail()); ?>"
         window.CRISP_SESSION_ID = $crisp.get('session:identifier');
 
-        $crisp.push(['set', 'session:segments', [['magento']]]);
+        // Set session segment (only after first message is sent)
+        $crisp.push(["on", "message:sent", () => {
+          $crisp.push(["set", "session:segments", [["magento"]]]);
+          $crisp.push(["off", "message:sent"]);
+        }])
 
         if (_customerEmail) {
             $crisp.push(['set', 'user:email', _customerEmail]);
