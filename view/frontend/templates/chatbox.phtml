@@ -21,7 +21,7 @@
         $crisp.push(["on", "message:sent", () => {
           $crisp.push(["set", "session:segments", [["magento"]]]);
           $crisp.push(["off", "message:sent"]);
-        }])
+        }]);
 
         if (_customerEmail) {
             $crisp.push(['set', 'user:email', _customerEmail]);
@@ -48,7 +48,7 @@
                     $crisp.push(['set', 'user:nickname', _customerData.fullname]);
                 }
 
-                if ((_cartData || {}).items) {
+                if (_cartData?.items?.length > 0) {
 
                     if (_currency !== null) {
                         _cartData.currency = _currency
