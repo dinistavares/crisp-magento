@@ -62,7 +62,9 @@
                         data.currency = _currency
                     }
 
-                    postData(_cartType, data);
+                    if (data?.items?.length > 0) {
+                        postData(_cartType, data);
+                    }
                 });
             }, 200);
         })
