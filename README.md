@@ -6,7 +6,7 @@ A module to add [Crisp](https://crisp.chat) to your store.
 
 ```bash
 # Update your compose.json file
-composer require crisp-chat/chatbox-and-helpdesk:1.0.4
+composer require crisp-chat/chatbox-and-helpdesk:1.0.5
 
 # Enable the Crisp module:
 bin/magento module:enable Crisp_Crisp
