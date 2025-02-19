@@ -51,31 +51,6 @@ class Chatbox extends Template
     }
 
     /**
-     * Returns customer_id.
-     *
-     * @return string
-     */
-    public function getCustomerId()
-    {
-        $customer = $this->_session->create();
-
-        return $customer->getCustomer()->getId();
-    }
-
-    /**
-     * Return Customer email
-     *
-     * @return string
-     */
-    public function getCustomerEmail()
-    {
-        $customerId = $this->getCustomerId();
-        $customer   = $this->_customer->create()->load((int) $customerId);
-
-        return $customer->getEmail();
-    }
-
-    /**
      * Get current currency code
      *
      * @return string

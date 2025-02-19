@@ -12,9 +12,30 @@
         d.getElementsByTagName("head")[0].appendChild(s);
     })();
 
+    // Get customer data from API
+    let _customerId, _customerEmail;
+
+    require(["jquery"], function ($) {
+        $.ajax({
+            url: "/rest/V1/customers/me",
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            success: function (customer) {
+                if (customer.id) {
+                    _customerId = customer.id;
+                }
+                if (customer.email) {
+                    _customerEmail = customer.email;
+                }
+            },
+            error: function () {
+                // Ignore error
+            }
+        });
+    });
+
     window.CRISP_READY_TRIGGER = function () {
-        let _customerId =  "<?= $escaper->escapeHtml($block->getCustomerId()); ?>"
-        let _customerEmail = "<?= $escaper->escapeHtml($block->getCustomerEmail()); ?>"
         window.CRISP_SESSION_ID = $crisp.get('session:identifier');
 
         // Set session segment (only after first message is sent)

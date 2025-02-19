@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module-customer:etc/sections.xsd">
+    <action name="customer/account/login">
+        <section name="customer"/>
+    </action>
+    <action name="customer/account/logout">
+        <section name="customer"/>
+    </action>
+</config>
