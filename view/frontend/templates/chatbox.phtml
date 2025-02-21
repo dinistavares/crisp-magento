@@ -1,122 +1,129 @@
 <?php if (null !== $block->getWebsiteId()): ?>
-<script>
-    const crispPluginURL = "https://plugins.crisp.chat/urn:crisp.im:magento:0"
+    <script>
+        const crispPluginURL = "https://plugins.crisp.chat/urn:crisp.im:magento:0"
 
-    window.$crisp = [];
-    window.CRISP_WEBSITE_ID = "<?= $escaper->escapeHtml($block->getWebsiteId()); ?>";
-    (function () {
-        d = document;
-        s = d.createElement("script");
-        s.src = "https://client.crisp.chat/l.js";
-        s.async = 1;
-        d.getElementsByTagName("head")[0].appendChild(s);
-    })();
+        window.$crisp = [];
+        window.CRISP_WEBSITE_ID = "<?= $escaper->escapeHtml($block->getWebsiteId()); ?>";
+        (function () {
+            d = document;
+            s = d.createElement("script");
+            s.src = "https://client.crisp.chat/l.js";
+            s.async = 1;
+            d.getElementsByTagName("head")[0].appendChild(s);
+        })();
 
-    // Get customer data from API
-    let _customerId, _customerEmail;
+        window.CRISP_READY_TRIGGER = __handleCrispTriggered;
 
-    require(["jquery"], function ($) {
-        $.ajax({
-            url: "/rest/V1/customers/me",
-            type: "GET",
-            contentType: "application/json",
-            dataType: "json",
-            success: function (customer) {
-                if (customer.id) {
-                    _customerId = customer.id;
-                }
-                if (customer.email) {
-                    _customerEmail = customer.email;
-                }
-            },
-            error: function () {
-                // Ignore error
+        function handleMagentoCustomerData(customerData) {
+            const _customer = customerData.get("customer")();
+
+            // No customer found, do not continue.
+            if (!_customer || Object.keys(_customer).length === 0) {
+                return;
             }
-        });
-    });
 
-    window.CRISP_READY_TRIGGER = function () {
-        window.CRISP_SESSION_ID = $crisp.get('session:identifier');
+            // Set customers full name in Crisp
+            $crisp.push(['set', 'user:nickname', _customer.fullname]);
 
-        // Set session segment (only after first message is sent)
-        $crisp.push(["on", "message:sent", () => {
-          $crisp.push(["set", "session:segments", [["magento"]]]);
-          $crisp.push(["off", "message:sent"]);
-        }]);
+            // Fetch customer data using Magento API
+            require(["jquery"], function ($) {
+                $.ajax({
+                    url: "/rest/V1/customers/me",
+                    type: "GET",
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (customer) {
+                        // Set customer email in Crisp
+                        if (customer.email) {
+                            $crisp.push(['set', 'user:email', customer.email]);
+                        }
 
-        if (_customerEmail) {
-            $crisp.push(['set', 'user:email', _customerEmail]);
-        }
-
-        if (_customerId) {
-            postData("customer", {id: parseInt(_customerId)})
-        }
-
-        postCartLuma();
-    }
-
-    function postCartLuma() {
-        require(["Magento_Customer/js/customer-data"], (customerData) => {
-            setTimeout(() => {
-                let _cartType = "cart"
-                let _cart = customerData.get("cart");
-                let _customer = customerData.get("customer");
-                let _cartData = _cart()
-                let _customerData = _customer()
-                let _currency = "<?= $escaper->escapeHtml($block->getCurrentCurrency()); ?>"
-
-                if ((_customerData || {}).fullname) {
-                    $crisp.push(['set', 'user:nickname', _customerData.fullname]);
-                }
-
-                if (_cartData?.items?.length > 0) {
-
-                    if (_currency !== null) {
-                        _cartData.currency = _currency
-                    }
-
-                    postData(_cartType, _cartData);
-                }
-
-                _cart.subscribe((data) => {
-                    if (_currency !== null) {
-                        data.currency = _currency
-                    }
-
-                    if (data?.items?.length > 0) {
-                        postData(_cartType, data);
+                        // Post customer ID to Crisp
+                        if (customer.id) {
+                            __reportCrispData("customer", {id: parseInt(customer.id)})
+                        }
+                    },
+                    error: function () {
+                        // Ignore error
                     }
                 });
-            }, 200);
-        })
-    }
+            });
+        }
 
-    function postData(type, body) {
-        fetch(
-                crispPluginURL +
-                "/visitors/website/" +
-                window.CRISP_WEBSITE_ID +
-                "/session/" +
-                window.CRISP_SESSION_ID +
-                "/" + type,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-                body: JSON.stringify(body),
+        function handleMagentoCustomerCart(customerData) {
+            const _cartType = "cart";
+            const _cart = customerData.get("cart");
+            const _cartData = _cart();
+            const _currency = "<?= $escaper->escapeHtml($block->getCurrentCurrency()); ?>";
+
+            // Post cart immediately to Crisp
+            if (_cartData?.items?.length > 0) {
+                if (_currency !== null) {
+                    _cartData.currency = _currency
+                }
+
+                __reportCrispData(_cartType, _cartData);
             }
-        );
-    }
-</script>
+
+            // Subscribe to cart changes and post to Crisp
+            _cart.subscribe((data) => {
+                if (_currency !== null) {
+                    data.currency = _currency
+                }
+
+                if (data?.items?.length > 0) {
+                    __reportCrispData(_cartType, data);
+                }
+            });
+        }
+
+        function __handleCrispTriggered() {
+            // Set 'magento' segment on session (only after first message is sent)
+            $crisp.push(["on", "message:sent", () => {
+              $crisp.push(["set", "session:segments", [["magento"]]]);
+              $crisp.push(["off", "message:sent"]);
+            }]);
+
+            // Only post data when chat is opened by the user for the first time.
+            $crisp.push(["on", "chat:opened", () => {
+                // Get and save Crisp session ID
+                window.CRISP_SESSION_ID = $crisp.get('session:identifier');
+                $crisp.push(["off", "chat:opened"]);
+
+                // Handle magento customer data and cart
+                require(["Magento_Customer/js/customer-data"], (customerData) => {
+                    handleMagentoCustomerData(customerData);
+                    handleMagentoCustomerCart(customerData);
+                });
+            }])
+        }
+
+        function __reportCrispData(type, body) {
+            fetch(
+                    crispPluginURL +
+                    "/visitors/website/" +
+                    window.CRISP_WEBSITE_ID +
+                    "/session/" +
+                    window.CRISP_SESSION_ID +
+                    "/" + type,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                    },
+                    body: JSON.stringify(body),
+                }
+            );
+        }
+    </script>
 <?php else: ?>
-<script>
-    console.warn(
-        `Crisp chatbox is installed but not configured -
-        To enable the chatbox please login to your store as
-        admin then go to: Stores > Settings > Configuration
-        > Crisp > Settings and configure your Crisp websiteID.`
-    );
-</script>
+    <script>
+        console.warn(
+            `Crisp chatbox is installed but not configured -
+            To enable the chatbox please login to your store as
+            admin then go to: Stores > Settings > Configuration
+            > Crisp > Settings and configure your Crisp websiteID.`
+        );
+    </script>
 <?php endif; ?>
